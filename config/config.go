@@ -12,8 +12,13 @@ import (
 
 type GlobalConfig struct {
 	User struct {
+		REGION_ID         string `json:"region_id"`
 		ACCESS_KEY_ID     string `json:"access_key_id"`
 		ACCESS_KEY_SECRET string `json:"access_key_secret"`
+	}
+	Domain struct {
+		RR         string `json:"rr"`
+		DomainName string `json:"domain_name"`
 	}
 }
 

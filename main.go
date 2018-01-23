@@ -9,8 +9,6 @@ import (
 	"github.com/v2af/aliyun_ddns/config"
 )
 
-var lp = log.Println
-
 func prepare() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
@@ -26,7 +24,21 @@ func init() {
 }
 
 func main() {
-	alidns.NewClientWithAccessKey("", "", "")
+	cfg := config.Config()
+	dnsClient, err := alidns.NewClientWithAccessKey(cfg.User.REGION_ID, cfg.User.ACCESS_KEY_ID, cfg.User.ACCESS_KEY_SECRET)
+	if err != nil {
+		log.Println(err)
+	}
+	request := alidns.CreateDescribeDomainRecordsRequest()
+	request.DomainName = cfg.Domain.DomainName
+	rep, err := dnsClient.DescribeDomainRecords(request)
+	if err != nil {
+		log.Println(err)
+	}
+	for _, v := range rep.DomainRecords.Record {
+		log.Println(v)
+	}
+
 }
 
 func handleConfig(configFile string) {
