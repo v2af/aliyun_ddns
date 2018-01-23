@@ -19,6 +19,7 @@ type GlobalConfig struct {
 	Domain struct {
 		RR         string `json:"rr"`
 		DomainName string `json:"domain_name"`
+		TTL        int    `json:"ttl"`
 	}
 }
 
@@ -36,28 +37,28 @@ func Config() *GlobalConfig {
 
 func Parse(cfg string) error {
 	if cfg == "" {
-		return fmt.Errorf("使用 -c 指定配置文件")
+		return fmt.Errorf("use -c to specify configuration file")
 	}
 
 	if !file.IsExist(cfg) {
-		return fmt.Errorf("配置文件%s不存在", cfg)
+		return fmt.Errorf("configuration file %s is nonexistent", cfg)
 	}
 
 	ConfigFile = cfg
 	data, err := ioutil.ReadFile(cfg)
 	if err != nil {
-		return fmt.Errorf("读取配置文件 %s 失败,原因:  %s", cfg, err.Error())
+		return fmt.Errorf("read configuration file %s fail %s", cfg, err.Error())
 	}
 	var c GlobalConfig
 	err = json.Unmarshal(data, &c)
 	if err != nil {
-		return fmt.Errorf("解析配置文件 %s 失败,原因: %s", cfg, err.Error())
+		return fmt.Errorf("parse configuration file %s fail %s", cfg, err.Error())
 	}
 
 	configLock.Lock()
 	defer configLock.Unlock()
 	config = &c
 
-	log.Println("读取配置文件", cfg, "成功")
+	log.Println("load configuration file", cfg, "successfully")
 	return nil
 }
