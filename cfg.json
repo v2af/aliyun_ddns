@@ -1,6 +1,11 @@
 {
-  "user":{
-    "access_key_id":"",
-    "access_key_secret":""
-  }
+    "user": {
+        "region_id": "",
+        "access_key_id": "",
+        "access_key_secret": ""
+    },
+    "domain": {
+        "rr": "",
+        "domain_name": ""
+    }
 }
