@@ -19,7 +19,6 @@ type GlobalConfig struct {
 	Domain struct {
 		RR         string `json:"rr"`
 		DomainName string `json:"domain_name"`
-		TTL        int    `json:"ttl"`
 	}
 }
 
