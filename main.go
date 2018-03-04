@@ -30,7 +30,7 @@ func main() {
 		// ddns.ShowDomainRecordList()
 		dr := ddns.GetDR()
 		dr.GetRecordId()
-		log.Println(dr)
+		// log.Println(dr)
 		if !dr.IsExists {
 			ddns.AddDomainRecord()
 		} else {
