@@ -4,11 +4,11 @@ import (
 	"flag"
 	"log"
 	"runtime"
-	"time"
 
-	"github.com/aholic/ggtimer"
+	"github.com/asaskevich/EventBus"
 	"github.com/v2af/aliyun_ddns/config"
 	"github.com/v2af/aliyun_ddns/ddns"
+	"github.com/v2af/aliyun_ddns/lib"
 )
 
 func prepare() {
@@ -26,19 +26,11 @@ func init() {
 }
 
 func main() {
-	ggtimer.NewTicker(time.Duration(5)*time.Second, func(time time.Time) {
-		// ddns.ShowDomainRecordList()
-		dr := ddns.GetDR()
-		dr.GetRecordId()
-		// log.Println(dr)
-		if !dr.IsExists {
-			ddns.AddDomainRecord()
-		} else {
-			ddns.UpdateDomainRecord()
-		}
-	})
-	select {}
-	// ddns.ChangeDomainRecord()
+	ddnsService := ddns.NewDdnsSerive()
+	eventbus := EventBus.New()
+	eventbus.Subscribe(lib.EVENT_IP_CHANGE, ddnsService.OnIpChanged)
+	ipservice := lib.NewIpService(eventbus)
+	ipservice.Run()
 
 }
 

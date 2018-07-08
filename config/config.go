@@ -11,6 +11,7 @@ import (
 )
 
 type GlobalConfig struct {
+	Interval int `json:"interval"`
 	User struct {
 		REGION_ID         string `json:"region_id"`
 		ACCESS_KEY_ID     string `json:"access_key_id"`
@@ -19,6 +20,10 @@ type GlobalConfig struct {
 	Domain struct {
 		RR         string `json:"rr"`
 		DomainName string `json:"domain_name"`
+	}
+	Ip struct {
+		Addr string `json:"addr"`
+		Port int    `json:"port"`
 	}
 }
 
