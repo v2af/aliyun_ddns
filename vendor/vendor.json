@@ -1,0 +1,118 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "nPHV4mAwhx7ArefhthtMAZYeOjs=",
+			"path": "github.com/aholic/ggtimer",
+			"revision": "5d7b30837a52057a444f1372232c72cd4e7d60b0",
+			"revisionTime": "2015-09-05T13:10:44Z"
+		},
+		{
+			"checksumSHA1": "5oS8nSaz0DHPyB9duCGN3FHqIjA=",
+			"path": "github.com/aliyun/alibaba-cloud-sdk-go/sdk",
+			"revision": "dc8dcaff2a0a258570031fd2eec0bdb7f12c3481",
+			"revisionTime": "2018-01-19T09:03:46Z"
+		},
+		{
+			"checksumSHA1": "SKhH3yACPsZLklR6CNQxsPWbn8E=",
+			"path": "github.com/aliyun/alibaba-cloud-sdk-go/sdk/auth",
+			"revision": "dc8dcaff2a0a258570031fd2eec0bdb7f12c3481",
+			"revisionTime": "2018-01-19T09:03:46Z"
+		},
+		{
+			"checksumSHA1": "W7ybWD47+CdpgcKTOEEEcgMskw4=",
+			"path": "github.com/aliyun/alibaba-cloud-sdk-go/sdk/auth/credentials",
+			"revision": "dc8dcaff2a0a258570031fd2eec0bdb7f12c3481",
+			"revisionTime": "2018-01-19T09:03:46Z"
+		},
+		{
+			"checksumSHA1": "gIfwXsE0TTZMj0b7SEfLPXknfj8=",
+			"path": "github.com/aliyun/alibaba-cloud-sdk-go/sdk/auth/signers",
+			"revision": "dc8dcaff2a0a258570031fd2eec0bdb7f12c3481",
+			"revisionTime": "2018-01-19T09:03:46Z"
+		},
+		{
+			"checksumSHA1": "HlV8WDS8sLwaAgVvglWPfgYgp6M=",
+			"path": "github.com/aliyun/alibaba-cloud-sdk-go/sdk/endpoints",
+			"revision": "dc8dcaff2a0a258570031fd2eec0bdb7f12c3481",
+			"revisionTime": "2018-01-19T09:03:46Z"
+		},
+		{
+			"checksumSHA1": "ZK6DRbYk9yt4AYcDTy+UQTMGR28=",
+			"path": "github.com/aliyun/alibaba-cloud-sdk-go/sdk/errors",
+			"revision": "dc8dcaff2a0a258570031fd2eec0bdb7f12c3481",
+			"revisionTime": "2018-01-19T09:03:46Z"
+		},
+		{
+			"checksumSHA1": "Sx3Q5WUWA6lQFy1ThwVPF21YUYA=",
+			"path": "github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests",
+			"revision": "dc8dcaff2a0a258570031fd2eec0bdb7f12c3481",
+			"revisionTime": "2018-01-19T09:03:46Z"
+		},
+		{
+			"checksumSHA1": "jzHXZo5MmE7wU27hQGrE11+GoGY=",
+			"path": "github.com/aliyun/alibaba-cloud-sdk-go/sdk/responses",
+			"revision": "dc8dcaff2a0a258570031fd2eec0bdb7f12c3481",
+			"revisionTime": "2018-01-19T09:03:46Z"
+		},
+		{
+			"checksumSHA1": "9xtluhu3ahnEG5kEFzEF1yGzkCs=",
+			"path": "github.com/aliyun/alibaba-cloud-sdk-go/sdk/utils",
+			"revision": "dc8dcaff2a0a258570031fd2eec0bdb7f12c3481",
+			"revisionTime": "2018-01-19T09:03:46Z"
+		},
+		{
+			"checksumSHA1": "69JpVCp778//kmj5pJVgzSSKw98=",
+			"path": "github.com/aliyun/alibaba-cloud-sdk-go/services/alidns",
+			"revision": "dc8dcaff2a0a258570031fd2eec0bdb7f12c3481",
+			"revisionTime": "2018-01-19T09:03:46Z"
+		},
+		{
+			"checksumSHA1": "C6MVQdF0J0a6TIlpShtP6YK7TJs=",
+			"path": "github.com/asaskevich/EventBus",
+			"revision": "9223ecd796146991d8ffc3b822d5aa02f15aee97",
+			"revisionTime": "2017-04-09T23:56:00Z"
+		},
+		{
+			"checksumSHA1": "OkgPkW9qMKIe/A4Yy+SetZ4P/1k=",
+			"path": "github.com/ddliu/go-httpclient",
+			"revision": "72917d81d0423a6235790470d15a4d099e3490f9",
+			"revisionTime": "2018-02-26T15:33:42Z"
+		},
+		{
+			"checksumSHA1": "zv490jiWnX4fZER94QoGdMv6QzE=",
+			"origin": "github.com/aliyun/alibaba-cloud-sdk-go/vendor/github.com/jmespath/go-jmespath",
+			"path": "github.com/jmespath/go-jmespath",
+			"revision": "dc8dcaff2a0a258570031fd2eec0bdb7f12c3481",
+			"revisionTime": "2018-01-19T09:03:46Z"
+		},
+		{
+			"checksumSHA1": "9SMylEipho6PyElmBg6XJZPU1O4=",
+			"origin": "github.com/aliyun/alibaba-cloud-sdk-go/vendor/github.com/json-iterator/go",
+			"path": "github.com/json-iterator/go",
+			"revision": "dc8dcaff2a0a258570031fd2eec0bdb7f12c3481",
+			"revisionTime": "2018-01-19T09:03:46Z"
+		},
+		{
+			"checksumSHA1": "xCv4GBFyw07vZkVtKF/XrUnkHRk=",
+			"path": "github.com/pkg/errors",
+			"revision": "e881fd58d78e04cf6d0de1217f8707c8cc2249bc",
+			"revisionTime": "2017-12-16T07:03:16Z"
+		},
+		{
+			"checksumSHA1": "1myjT8gKwUI3WNE5a/85jNPL8Fo=",
+			"origin": "github.com/aliyun/alibaba-cloud-sdk-go/vendor/github.com/satori/go.uuid",
+			"path": "github.com/satori/go.uuid",
+			"revision": "dc8dcaff2a0a258570031fd2eec0bdb7f12c3481",
+			"revisionTime": "2018-01-19T09:03:46Z"
+		},
+		{
+			"checksumSHA1": "JtRitElXXwBSKX2G7HsK9ErgHI0=",
+			"path": "github.com/v2af/file",
+			"revision": "1c3abc8803537913d976e02dd576ca7be7cfa8e6",
+			"revisionTime": "2017-09-14T03:22:55Z"
+		}
+	],
+	"rootPath": "github.com/v2af/aliyun_ddns"
+}
