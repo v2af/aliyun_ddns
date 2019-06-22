@@ -1,0 +1,26 @@
+version: '3.2'
+services: 
+  workspace:
+    build:
+      context: './'
+    image: ${COMPOSE_PROJECT_NAME}-workspace
+    container_name: '${COMPOSE_PROJECT_NAME}-workspace'
+    volumes: 
+      - ../:/${PROJECT_PATH}:cached
+      - ./bashrc:/root/.bashrc
+      - ${GOMODCACHE}/pkg/mod/:/go/pkg/mod/
+    environment: 
+      - ALIYUN_ACCESS_KEY_ID=${ALIYUN_ACCESS_KEY_ID}
+      - ALIYUN_ACCESS_KEY_SECRET=${ALIYUN_ACCESS_KEY_SECRET}
+      - DOMAIN_RR=${DOMAIN_RR}
+      - DOMAIN_NAME=${DOMAIN_NAME}
+      - DNS_TTL=${DNS_TTL}
+      - GET_PUBLIC_IP_ADDR=${GET_PUBLIC_IP_ADDR}
+      - GET_PUBLIC_IP_PORT=${GET_PUBLIC_IP_PORT}
+      - ENV=/root/.bashrc
+      - GOPROXY=${GOPROXY}
+    # ports: 
+    #   - 80:80 
+    working_dir: /${PROJECT_PATH}
+    tty: true
+    network_mode: host

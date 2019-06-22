@@ -1,0 +1,101 @@
+---
+kind: pipeline
+name: default
+
+steps:
+- name: download-dependencies
+  image: golang:1.12
+  commands:
+    # wait for services to be ready.
+    - sleep 5
+    - go mod download
+    - go mod vendor # this is for when the Dockerfile gets built
+  environment:
+    GO111MODULE: on
+    GOPROXY: https://goproxy.io
+  volumes:
+  - name: cache
+    path: /go
+
+
+- name: build
+  image: golang:1.12
+  commands:
+
+  # build
+  - go build main.go
+
+  # test
+  - go vet ./...
+  - go test -v ./...
+
+  # end to end test
+  - ./main & # run the just-built aliddns server
+  - sleep 10
+  environment:
+    GO111MODULE: on
+    ALIYUN_ACCESS_KEY_ID:
+      from_secret: ALIYUN_ACCESS_KEY_ID
+    ALIYUN_ACCESS_KEY_SECRET:
+      from_secret: ALIYUN_ACCESS_KEY_SECRET
+    DOMAIN_RR:
+      from_secret: DOMAIN_RR
+    DOMAIN_NAME:
+      from_secret: DOMAIN_NAME
+    DNS_TTL:
+      from_secret: DNS_TTL
+    GET_PUBLIC_IP_ADDR:
+      from_secret: GET_PUBLIC_IP_ADDR
+    GET_PUBLIC_IP_PORT:
+      from_secret: GET_PUBLIC_IP_PORT
+  when:
+    branch:
+      - master
+    event:
+      - push
+  volumes:
+  - name: cache
+    path: /go
+
+- name: docker-latest
+  image: plugins/docker
+  settings:
+    username:
+      from_secret: DOCKER_USER
+    password:
+      from_secret: DOCKER_PASSWORD
+    repo: v2af/aliddns
+    tags:
+      - canary
+    dockerfile: Dockerfile
+    build_args:
+      - VERSION=${DRONE_COMMIT}
+  when:
+    branch:
+      - master
+    event:
+      - push
+
+- name: docker-release
+  image: plugins/docker
+  settings:
+    username:
+      from_secret: DOCKER_USER
+    password:
+      from_secret: DOCKER_PASSWORD
+    repo: v2af/aliddns
+    tags:
+      - ${DRONE_TAG}
+      - latest
+    dockerfile: Dockerfile
+    build_args:
+      - VERSION=${DRONE_TAG}
+
+  when:
+    event:
+      - tag
+---
+kind: signature
+hmac: 9b6b0dfc4f74bf860ad14730dd5aad44992be7db35c29ccae77e51aa0957dd2e
+
+...

@@ -2,23 +2,28 @@ package lib
 
 import (
 	"fmt"
-	"github.com/asaskevich/EventBus"
-	"github.com/ddliu/go-httpclient"
-	"github.com/v2af/aliyun_ddns/config"
 	"log"
 	"os"
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/asaskevich/EventBus"
+	"github.com/ddliu/go-httpclient"
+	"github.com/v2af/aliyun_ddns/config"
 )
 
 const (
-	EVENT_IP_CHANGE = "ip change"
-	USERAGENT       = "aliyun_ddns"
-	TIMEOUT         = 30
+	// EventIPChange EventIPChange
+	EventIPChange = "ip change"
+	// USERAGENT USERAGENT
+	USERAGENT = "aliyun_ddns"
+	// TIMEOUT TIMEOUT
+	TIMEOUT = 30
 )
 
-type IpService struct {
+// IPService IPService
+type IPService struct {
 	addr       string
 	port       int
 	publicIP   string
@@ -26,10 +31,11 @@ type IpService struct {
 	eventbus   EventBus.Bus
 }
 
-func NewIpService(eventbus EventBus.Bus) *IpService {
-	s := &IpService{
-		addr:     config.Config().Ip.Addr,
-		port:     config.Config().Ip.Port,
+// NewIPService NewIPService
+func NewIPService(eventbus EventBus.Bus) *IPService {
+	s := &IPService{
+		addr:     config.Config().IP.Addr,
+		port:     config.Config().IP.Port,
 		eventbus: eventbus,
 	}
 	s.httpClient.Defaults(httpclient.Map{
@@ -39,29 +45,30 @@ func NewIpService(eventbus EventBus.Bus) *IpService {
 	return s
 }
 
-func (this *IpService) Run() {
+// Run Run
+func (s *IPService) Run() {
 	ticker := time.NewTicker(time.Duration(config.Config().Interval) * time.Second)
 
 	for {
 		select {
 		case <-ticker.C:
-			this.handle()
+			s.handle()
 		}
 	}
 }
 
-func (this *IpService) handle() {
-	if ip, err := this.getIP(); err != nil || ip == this.publicIP || len(ip) == 0 {
+func (s *IPService) handle() {
+	if ip, err := s.getIP(); err != nil || ip == s.publicIP || len(ip) == 0 {
 		return
 	} else {
-		this.eventbus.Publish(EVENT_IP_CHANGE, ip)
-		this.publicIP = ip
+		s.eventbus.Publish(EventIPChange, ip)
+		s.publicIP = ip
 	}
 
 }
 
-func (this *IpService) getIP() (ip string, err error) {
-	resp, err := this.httpClient.Get(fmt.Sprintf("http://%s:%d", config.Config().Ip.Addr, config.Config().Ip.Port))
+func (s *IPService) getIP() (ip string, err error) {
+	resp, err := s.httpClient.Get(fmt.Sprintf("http://%s:%d", config.Config().IP.Addr, config.Config().IP.Port))
 	if err != nil {
 		log.Println("failed to get public ip :", err)
 		return

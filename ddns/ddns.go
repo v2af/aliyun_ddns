@@ -2,39 +2,77 @@ package ddns
 
 import (
 	"fmt"
+	"log"
+	"time"
+
+	"github.com/Rican7/retry/strategy"
+
+	"github.com/Rican7/retry"
+
+	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/alidns"
 	"github.com/pkg/errors"
 	"github.com/v2af/aliyun_ddns/config"
-	"log"
 )
 
-var ERROR_DOMAIN_RECORD_IS_EXISTS = errors.New("domain record is exists")
-var ERROR_DOMAIN_RECORD_IS_NOT_UPDATE = errors.New("domain record is not update")
+var (
+	// ErrorDomainRecordIsExists ErrorDomainRecordIsExists
+	ErrorDomainRecordIsExists = errors.New("domain record is exists")
+	// ErrorDomainRecordIsNotUpdate ErrorDomainRecordIsNotUpdate
+	ErrorDomainRecordIsNotUpdate = errors.New("domain record is not update")
+)
 
-type DdnsService struct {
-	recordId string
+// Service Service
+type Service struct {
+	recordID string
 	publicIP string
 }
 
-func NewDdnsSerive() *DdnsService {
-	return &DdnsService{}
+// NewSerive NewSerive
+func NewSerive() *Service {
+	return &Service{}
 }
 
-func (this *DdnsService) OnIpChanged(ip string) {
-	this.publicIP = ip
-	switch err := this.showCurrentDomainRecord(); err {
-	case ERROR_DOMAIN_RECORD_IS_EXISTS:
-		this.UpdateDomainRecord()
+// OnIPChanged OnIPChanged
+func (s *Service) OnIPChanged(ip string) {
+	s.publicIP = ip
+	switch err := s.showCurrentDomainRecord(); err {
+	case ErrorDomainRecordIsExists:
+		if err := retry.Retry(
+			func(attempt uint) error {
+				if err := s.UpdateDomainRecord(); err != nil {
+					return err
+				}
+				return nil
+			},
+			strategy.Limit(5),
+			strategy.Delay(3*time.Second)); err != nil {
+			// smtp
+			log.Println(err)
+		}
 		break
 	case nil:
-		this.AddDomainRecord()
+		if err := retry.Retry(
+			func(attempt uint) error {
+				if err := s.AddDomainRecord(); err != nil {
+					return err
+				}
+				return nil
+			},
+			strategy.Limit(5),
+			strategy.Delay(3*time.Second)); err != nil {
+			// smtp
+			log.Println(err)
+		}
 		break
+	default:
+		log.Println(err)
 	}
 }
 
-func (this *DdnsService) showCurrentDomainRecord() error {
+func (s *Service) showCurrentDomainRecord() error {
 	cfg := config.Config()
-	dnsClient, err := alidns.NewClientWithAccessKey(cfg.User.REGION_ID, cfg.User.ACCESS_KEY_ID, cfg.User.ACCESS_KEY_SECRET)
+	dnsClient, err := alidns.NewClientWithAccessKey(cfg.User.RegionID, cfg.User.AccessKeyID, cfg.User.AccessKeySecret)
 	if err != nil {
 		log.Println("create dns client failed :", err)
 		return err
@@ -50,55 +88,57 @@ func (this *DdnsService) showCurrentDomainRecord() error {
 	for _, v := range rep.DomainRecords.Record {
 		if v.RR == cfg.Domain.RR {
 			fmt.Printf("current domain record :\nrr :%s\ntype :%s\nvalue :%s\nttl :%d\n---------------\n", v.RR, v.Type, v.Value, v.TTL)
-			this.recordId = v.RecordId
-			if this.publicIP == v.Value {
-				return ERROR_DOMAIN_RECORD_IS_NOT_UPDATE
+			s.recordID = v.RecordId
+			if s.publicIP == v.Value {
+				return ErrorDomainRecordIsNotUpdate
 			}
-			return ERROR_DOMAIN_RECORD_IS_EXISTS
+			return ErrorDomainRecordIsExists
 		}
 	}
 	return nil
 }
 
-func (this *DdnsService) AddDomainRecord() {
+// AddDomainRecord AddDomainRecord
+func (s *Service) AddDomainRecord() error {
 	cfg := config.Config()
-	dnsClient, err := alidns.NewClientWithAccessKey(cfg.User.REGION_ID, cfg.User.ACCESS_KEY_ID, cfg.User.ACCESS_KEY_SECRET)
+	dnsClient, err := alidns.NewClientWithAccessKey(cfg.User.RegionID, cfg.User.AccessKeyID, cfg.User.AccessKeySecret)
 	if err != nil {
 		log.Println("create dns client failed :", err)
-		return
+		return err
 	}
 	request := alidns.CreateAddDomainRecordRequest()
-
-	request.Value = this.publicIP
+	request.Value = s.publicIP
 	request.RR = cfg.Domain.RR
 	request.DomainName = cfg.Domain.DomainName
 	request.Type = "A"
+	request.TTL = requests.NewInteger(cfg.Domain.TTL)
 	_, err = dnsClient.AddDomainRecord(request)
 	if err != nil {
 		log.Println("add domain record failed :", err)
-		return
+		return err
 	}
+	return nil
 }
 
-func (this *DdnsService) UpdateDomainRecord() {
+// UpdateDomainRecord UpdateDomainRecord
+func (s *Service) UpdateDomainRecord() error {
 	cfg := config.Config()
-	dnsClient, err := alidns.NewClientWithAccessKey(cfg.User.REGION_ID, cfg.User.ACCESS_KEY_ID, cfg.User.ACCESS_KEY_SECRET)
+	dnsClient, err := alidns.NewClientWithAccessKey(cfg.User.RegionID, cfg.User.AccessKeyID, cfg.User.AccessKeySecret)
 	if err != nil {
 		log.Println("create dns client failed :", err)
-		return
+		return err
 	}
 	request := alidns.CreateUpdateDomainRecordRequest()
-	if err != nil {
-		return
-	}
-	request.Value = this.publicIP
+	request.Value = s.publicIP
 	request.RR = cfg.Domain.RR
-	request.RecordId = this.recordId
+	request.RecordId = s.recordID
 	request.Type = "A"
+	request.TTL = requests.NewInteger(cfg.Domain.TTL)
+
 	_, err = dnsClient.UpdateDomainRecord(request)
 	if err != nil {
 		log.Println("update domain record failed :", err)
-		return
+		return err
 	}
-
+	return nil
 }
