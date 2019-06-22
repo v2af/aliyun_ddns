@@ -58,12 +58,12 @@ func (s *IPService) Run() {
 }
 
 func (s *IPService) handle() {
-	if ip, err := s.getIP(); err != nil || ip == s.publicIP || len(ip) == 0 {
+	ip, err := s.getIP()
+	if err != nil || ip == s.publicIP || len(ip) == 0 {
 		return
-	} else {
-		s.eventbus.Publish(EventIPChange, ip)
-		s.publicIP = ip
 	}
+	s.eventbus.Publish(EventIPChange, ip)
+	s.publicIP = ip
 
 }
 
